@@ -1,0 +1,59 @@
+app:
+  build: .
+  command: python -u app.py
+  ports:
+    - "5000:5000"
+  volumes:
+    - .:/app
+  links:
+    - db
+
+network:
+  build: .
+  command: python -u network.py && flask run
+  container_name: network
+  ports:
+    - "5001:5000"
+  volumes:
+    - .:/app
+
+node1:
+  build: .
+  command: python -u node1.py && flask run
+  container_name: node1
+  ports:
+    - "5002:5000"
+  volumes:
+    - .:/app
+
+node2:
+  build: .
+  command: python -u node2.py && flask run
+  container_name: node2
+  ports:
+    - "5003:5000"
+  volumes:
+    - .:/app
+
+node3:
+  build: .
+  command: python -u node3.py && flask run
+  container_name: node3
+  ports:
+    - "5004:5000"
+  volumes:
+    - .:/app
+
+
+db:
+  image: mongo:latest
+  hostname: test_mongodb
+  environment:
+    - MONGO_INITDB_DATABASE=user_db
+  volumes:
+    - ./init-db.js:/docker-entrypoint-initdb.d/init-db.js:ro
+  ports:
+    - 27017:27017
+
+
+
